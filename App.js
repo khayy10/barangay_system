@@ -1,15 +1,26 @@
-import { BrowserRouter as Router } from "react-router-dom";
-import AppRoutes from "./routes/AppRoutes";
-import { AuthProvider } from "./context/AuthContext";
+require("dotenv").config();
 
-function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
-    </AuthProvider>
-  );
-}
+const express = require("express");
+const cors = require("cors");
 
-export default App;
+const app = express();
+
+// ================= MIDDLEWARE =================
+app.use(cors());
+app.use(express.json());
+
+// ================= TEST ROUTE =================
+app.get("/", (req, res) => {
+  res.send("🚀 BSPS API is running");
+});
+
+const authRoutes = require("./routes/authRoutes");
+
+app.use("/api/auth", authRoutes);
+
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
+
+module.exports = app;
